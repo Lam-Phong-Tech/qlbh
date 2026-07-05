@@ -203,9 +203,9 @@ const mApp = {
     addOrderItemRow: (selectedName = '', qty = 1) => {
         const container = document.getElementById('m-order-items-container');
         const row = document.createElement('div');
-        row.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
+        row.style.cssText = 'display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start;';
         
-        let selectHtml = `<select class="m-item-select" style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 8px;" onchange="mApp.calculateOrderTotal()">`;
+        let selectHtml = `<select class="m-item-select" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;" onchange="mApp.calculateOrderTotal()">`;
         selectHtml += '<option value="">-- Chọn sản phẩm --</option>';
         mockData.products.forEach(p => {
             selectHtml += `<option value="${p.name}" data-price="${p.price}" ${p.name === selectedName ? 'selected' : ''}>${p.name}</option>`;
@@ -213,9 +213,12 @@ const mApp = {
         selectHtml += `</select>`;
         
         row.innerHTML = `
-            ${selectHtml}
-            <input type="number" class="m-item-qty" value="${qty}" min="1" style="width: 70px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; text-align: center;" onchange="mApp.calculateOrderTotal()">
-            <div style="color: var(--text-sec); padding: 5px; cursor: pointer;" onclick="this.parentElement.remove(); mApp.calculateOrderTotal();"><i class="fa-solid fa-trash"></i></div>
+            <div style="flex: 1;">
+                ${selectHtml}
+                <div class="m-item-price-display" style="font-size: 13px; color: var(--text-sec); margin-top: 6px; padding-left: 5px;"></div>
+            </div>
+            <input type="number" class="m-item-qty" value="${qty}" min="1" style="width: 60px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; text-align: center;" onchange="mApp.calculateOrderTotal()">
+            <div style="color: var(--text-sec); font-size: 22px; cursor: pointer; padding: 4px 5px 0 0; line-height: 34px;" onclick="this.parentElement.remove(); mApp.calculateOrderTotal();">&times;</div>
         `;
         container.appendChild(row);
     },
@@ -223,13 +226,21 @@ const mApp = {
     calculateOrderTotal: () => {
         const container = document.getElementById('m-order-items-container');
         let total = 0;
-        const selects = container.querySelectorAll('.m-item-select');
-        const qtys = container.querySelectorAll('.m-item-qty');
+        const rows = container.children;
         
-        for (let i = 0; i < selects.length; i++) {
-            const opt = selects[i].options[selects[i].selectedIndex];
+        for (let i = 0; i < rows.length; i++) {
+            const select = rows[i].querySelector('.m-item-select');
+            const qtyInput = rows[i].querySelector('.m-item-qty');
+            const priceDisplay = rows[i].querySelector('.m-item-price-display');
+            
+            const opt = select.options[select.selectedIndex];
+            let rowPrice = 0;
             if (opt && opt.dataset.price) {
-                total += parseInt(opt.dataset.price) * (parseInt(qtys[i].value) || 1);
+                rowPrice = parseInt(opt.dataset.price) * (parseInt(qtyInput.value) || 1);
+                total += rowPrice;
+            }
+            if(priceDisplay) {
+                priceDisplay.textContent = rowPrice > 0 ? new Intl.NumberFormat('vi-VN').format(rowPrice) + ' đ' : '';
             }
         }
         
