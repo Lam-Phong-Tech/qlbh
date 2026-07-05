@@ -1,155 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Audio CRM - Portal</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary: #0f62fe;
-            --primary-hover: #0043ce;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #161616;
-            --text-secondary: #525252;
-            --border: #e0e0e0;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+      :root {
+        --primary: #0f62fe;
+        --primary-hover: #0043ce;
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-main: #161616;
+        --text-secondary: #525252;
+        --border: #e0e0e0;
+      }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        .portal-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
 
-        .portal-header h1 {
-            font-size: 32px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
+      .portal-header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
 
-        .portal-header p {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
+      .portal-header h1 {
+        font-size: 32px;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 10px;
+      }
 
-        .portal-cards {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 900px;
-        }
+      .portal-header p {
+        color: var(--text-secondary);
+        font-size: 16px;
+      }
 
-        .portal-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px 30px;
-            width: 320px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      .portal-cards {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 900px;
+      }
 
-        .portal-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(15, 98, 254, 0.15);
-            border-color: var(--primary);
-        }
+      .portal-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 40px 30px;
+        width: 320px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--text-main);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        .portal-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(15, 98, 254, 0.1);
-            color: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: 25px;
-            transition: all 0.3s ease;
-        }
+      .portal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(15, 98, 254, 0.15);
+        border-color: var(--primary);
+      }
 
-        .portal-card:hover .portal-icon {
-            background: var(--primary);
-            color: white;
-        }
+      .portal-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(15, 98, 254, 0.1);
+        color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+      }
 
-        .portal-card h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
+      .portal-card:hover .portal-icon {
+        background: var(--primary);
+        color: white;
+      }
 
-        .portal-card p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-        
-        .portal-footer {
-            margin-top: 60px;
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
+      .portal-card h3 {
+        font-size: 22px;
+        margin-bottom: 15px;
+      }
 
+      .portal-card p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.5;
+        flex-grow: 1;
+      }
+
+      .portal-footer {
+        margin-top: 60px;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="portal-header">
-        <h1><i class="fa-solid fa-headphones"></i> AUDIO CRM</h1>
-        <p>Vui lòng chọn cổng đăng nhập hệ thống</p>
+      <h1><i class="fa-solid fa-headphones"></i> AUDIO CRM</h1>
+      <p>Vui lòng chọn cổng đăng nhập hệ thống</p>
     </div>
 
     <div class="portal-cards">
-        <a href="admin.html" target="_blank" class="portal-card">
-            <div class="portal-icon">
-                <i class="fa-solid fa-laptop"></i>
-            </div>
-            <h3>Admin Web</h3>
-            <p>Dành cho Quản lý và Nhân viên văn phòng. Xem báo cáo, quản lý toàn bộ tính năng bán hàng và nhân sự.</p>
-        </a>
+      <a href="admin.html" target="_blank" class="portal-card">
+        <div class="portal-icon">
+          <i class="fa-solid fa-laptop"></i>
+        </div>
+        <h3>Admin Web</h3>
+        <p>
+          Dành cho Quản lý và Nhân viên văn phòng. Xem báo cáo, quản lý toàn bộ
+          tính năng bán hàng và nhân sự.
+        </p>
+      </a>
 
-        <a href="mobileapp.html" target="_blank" class="portal-card">
-            <div class="portal-icon">
-                <i class="fa-solid fa-mobile-screen"></i>
-            </div>
-            <h3>Mobile App</h3>
-            <p>Dành cho Nhân viên bán hàng / Thị trường. Xem khách hàng, đơn hàng và cập nhật trạng thái công việc nhanh chóng.</p>
-        </a>
+      <a href="mobileapp.html" target="_blank" class="portal-card">
+        <div class="portal-icon">
+          <i class="fa-solid fa-mobile-screen"></i>
+        </div>
+        <h3>Mobile App</h3>
+        <p>
+          Dành cho Nhân viên bán hàng / Thị trường. Xem khách hàng, đơn hàng và
+          cập nhật trạng thái công việc nhanh chóng.
+        </p>
+      </a>
     </div>
-    
+
     <div class="portal-footer">
-        &copy; 2026 Audio CRM Prototype. All rights reserved.
+      &copy; 2026 Audio CRM Prototype. All rights reserved.
     </div>
-
-</body>
+  </body>
 </html>

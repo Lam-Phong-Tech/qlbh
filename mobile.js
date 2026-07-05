@@ -148,24 +148,93 @@ const mApp = {
         }
     },
     
-    openCreateOrderModal: () => {
-        const prodSelect = document.getElementById('m-new-order-service');
-        if (prodSelect) {
-            prodSelect.innerHTML = '<option value="">-- Chọn sản phẩm --</option>' + mockData.products.map(p => `<option value="${p.name}" data-price="${p.price}">${p.name}</option>`).join('');
-            prodSelect.onchange = function() {
-                const opt = this.options[this.selectedIndex];
-                if(opt && opt.dataset.price) {
-                    document.getElementById('m-new-order-value').value = opt.dataset.price;
+    openCreateOrderModal: (orderId = null) => {
+        document.getElementById('m-order-items-container').innerHTML = '';
+        const modalTitle = document.getElementById('m-modal-create-order-title');
+        const editIdInput = document.getElementById('m-edit-order-id');
+        editIdInput.value = '';
+        
+        let initialItems = [];
+        
+        if (orderId) {
+            const order = mockData.orders.find(o => o.id === orderId);
+            if (order) {
+                modalTitle.textContent = 'Cập nhật Đơn Hàng';
+                editIdInput.value = orderId;
+                
+                const c = mockData.customers.find(c => c.id === order.customerId);
+                if (c) {
+                    document.getElementById('m-new-order-customer').value = c.name;
+                    document.getElementById('m-new-order-phone').value = c.phone;
                 }
-            };
+                
+                // Parse "2x Loa ABC, 1x Loa XYZ"
+                const parts = order.service.split(', ');
+                parts.forEach(part => {
+                    let qty = 1;
+                    let name = part;
+                    const match = part.match(/^(\d+)x\s+(.*)$/);
+                    if (match) {
+                        qty = parseInt(match[1]);
+                        name = match[2];
+                    } else if (!part.includes('x ')) { // Maybe it's just the old format without "x "
+                        name = part;
+                    }
+                    initialItems.push({name, qty});
+                });
+            }
+        } else {
+            modalTitle.textContent = 'Tạo Đơn Hàng';
+            document.getElementById('m-new-order-customer').value = '';
+            document.getElementById('m-new-order-phone').value = '';
         }
         
-        document.getElementById('m-new-order-customer').value = '';
-        document.getElementById('m-new-order-phone').value = '';
-        document.getElementById('m-new-order-value').value = '';
+        if (initialItems.length === 0) {
+            initialItems.push({name: '', qty: 1});
+        }
+        
+        initialItems.forEach(item => mApp.addOrderItemRow(item.name, item.qty));
+        mApp.calculateOrderTotal();
         
         const modal = document.getElementById('m-modal-create-order');
         if(modal) modal.style.display = 'block';
+    },
+
+    addOrderItemRow: (selectedName = '', qty = 1) => {
+        const container = document.getElementById('m-order-items-container');
+        const row = document.createElement('div');
+        row.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
+        
+        let selectHtml = `<select class="m-item-select" style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 8px;" onchange="mApp.calculateOrderTotal()">`;
+        selectHtml += '<option value="">-- Chọn sản phẩm --</option>';
+        mockData.products.forEach(p => {
+            selectHtml += `<option value="${p.name}" data-price="${p.price}" ${p.name === selectedName ? 'selected' : ''}>${p.name}</option>`;
+        });
+        selectHtml += `</select>`;
+        
+        row.innerHTML = `
+            ${selectHtml}
+            <input type="number" class="m-item-qty" value="${qty}" min="1" style="width: 70px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; text-align: center;" onchange="mApp.calculateOrderTotal()">
+            <div style="color: var(--text-sec); padding: 5px; cursor: pointer;" onclick="this.parentElement.remove(); mApp.calculateOrderTotal();"><i class="fa-solid fa-trash"></i></div>
+        `;
+        container.appendChild(row);
+    },
+    
+    calculateOrderTotal: () => {
+        const container = document.getElementById('m-order-items-container');
+        let total = 0;
+        const selects = container.querySelectorAll('.m-item-select');
+        const qtys = container.querySelectorAll('.m-item-qty');
+        
+        for (let i = 0; i < selects.length; i++) {
+            const opt = selects[i].options[selects[i].selectedIndex];
+            if (opt && opt.dataset.price) {
+                total += parseInt(opt.dataset.price) * (parseInt(qtys[i].value) || 1);
+            }
+        }
+        
+        document.getElementById('m-new-order-value').value = new Intl.NumberFormat('vi-VN').format(total) + ' đ';
+        document.getElementById('m-new-order-value').dataset.rawValue = total;
     },
     
     closeModal: (id) => {
@@ -176,15 +245,25 @@ const mApp = {
     submitCreateOrder: () => {
         const cName = document.getElementById('m-new-order-customer').value;
         const cPhone = document.getElementById('m-new-order-phone').value;
-        const service = document.getElementById('m-new-order-service').value;
-        let val = document.getElementById('m-new-order-value').value;
         
-        if(!cName || !service) {
-            alert('Vui lòng điền đủ Tên khách hàng và Sản phẩm!');
-            return;
+        const container = document.getElementById('m-order-items-container');
+        const selects = container.querySelectorAll('.m-item-select');
+        const qtys = container.querySelectorAll('.m-item-qty');
+        let itemsArr = [];
+        
+        for (let i = 0; i < selects.length; i++) {
+            if (selects[i].value) {
+                itemsArr.push(`${parseInt(qtys[i].value) || 1}x ${selects[i].value}`);
+            }
         }
         
-        val = parseInt(val) || 0;
+        const service = itemsArr.join(', ');
+        const val = parseInt(document.getElementById('m-new-order-value').dataset.rawValue) || 0;
+        
+        if(!cName || itemsArr.length === 0) {
+            alert('Vui lòng điền đủ Tên khách hàng và chọn ít nhất 1 Sản phẩm!');
+            return;
+        }
         
         // Find or create customer
         let cust = mockData.customers.find(c => c.name.toLowerCase() === cName.toLowerCase());
@@ -202,23 +281,33 @@ const mApp = {
             });
         }
         
-        const newOrderId = generateId('DH');
-        mockData.orders.push({
-            id: newOrderId,
-            customerId: custId,
-            service: service,
-            value: val,
-            saler: 'Nguyễn Admin', // Giả lập user hiện tại
-            paymentStatus: 'Chưa thanh toán',
-            status: 'Chờ xác nhận',
-            date: appState.today
-        });
+        const editId = document.getElementById('m-edit-order-id').value;
+        if (editId) {
+            const existingOrder = mockData.orders.find(o => o.id === editId);
+            if (existingOrder) {
+                existingOrder.customerId = custId;
+                existingOrder.service = service;
+                existingOrder.value = val;
+            }
+        } else {
+            const newOrderId = generateId('DH');
+            mockData.orders.push({
+                id: newOrderId,
+                customerId: custId,
+                service: service,
+                value: val,
+                saler: 'Nguyễn Admin',
+                paymentStatus: 'Chưa thanh toán',
+                status: 'Chờ xác nhận',
+                date: appState.today
+            });
+        }
         
         saveData();
         mApp.renderOrders();
         mApp.renderReports(); // Update KPI
         mApp.closeModal('m-modal-create-order');
-        alert('Tạo đơn hàng thành công!');
+        alert(editId ? 'Cập nhật đơn hàng thành công!' : 'Tạo đơn hàng thành công!');
     },
 
     renderOrders: () => {
@@ -233,16 +322,21 @@ const mApp = {
             html = '<div style="text-align:center; padding:20px; color:var(--text-sec);">Chưa có đơn hàng nào</div>';
         } else {
             recentOrders.forEach(o => {
+                const editBtn = o.status === 'Chờ xác nhận' ? `<button style="background:none; border:none; color:var(--primary); font-size:13px; font-weight:600; cursor:pointer;" onclick="mApp.openCreateOrderModal('${o.id}')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>` : '';
                 html += `
                     <div class="m-card">
                         <div class="m-card-header">
                             <div class="m-card-title">${o.id}</div>
                             <span class="badge ${getBadgeClass(o.status)}">${o.status}</span>
                         </div>
-                        <div class="m-card-subtitle">Khách hàng: ${getCustomerName(o.customerId)}</div>
+                        <div class="m-card-subtitle" style="color:var(--text-main); font-weight: 500;">Khách hàng: ${getCustomerName(o.customerId)}</div>
+                        <div class="m-card-subtitle" style="line-height: 1.4;">${o.service}</div>
                         <div class="m-card-subtitle">Ngày: ${formatDate(o.date)}</div>
-                        <div style="font-weight:bold; font-size: 16px; margin-top:5px; color:var(--primary); text-align:right;">
-                            ${formatMoney(o.value)}
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top:10px;">
+                            ${editBtn}
+                            <div style="font-weight:bold; font-size: 16px; color:var(--primary); text-align:right; flex:1;">
+                                ${formatMoney(o.value)}
+                            </div>
                         </div>
                     </div>
                 `;

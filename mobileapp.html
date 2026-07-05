@@ -307,7 +307,7 @@
         <div id="m-modal-create-order" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface); z-index: 1000; padding-top: 50px;">
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); background: var(--surface);">
                 <div style="color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer; width: 50px;" onclick="mApp.closeModal('m-modal-create-order')">Hủy</div>
-                <div style="font-weight: 700; font-size: 16px; flex: 1; text-align: center; color: var(--primary);">Tạo Đơn Hàng</div>
+                <div style="font-weight: 700; font-size: 16px; flex: 1; text-align: center; color: var(--primary);" id="m-modal-create-order-title">Tạo Đơn Hàng</div>
                 <div style="color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer; width: 50px; text-align: right;" onclick="mApp.submitCreateOrder()">Lưu</div>
             </div>
             <div style="padding: 20px; overflow-y: auto; height: calc(100% - 60px);" class="no-scrollbar">
@@ -321,13 +321,17 @@
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Sản phẩm / Dịch vụ *</label>
-                    <select id="m-new-order-service" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;">
-                        <!-- JS fill -->
-                    </select>
+                    <div id="m-order-items-container">
+                        <!-- Items appended here by JS -->
+                    </div>
+                    <button class="m-btn" style="width: 100%; padding: 10px; background: #e5f0ff; color: var(--primary); border: 1px dashed var(--primary); border-radius: 8px; margin-top: 10px;" onclick="mApp.addOrderItemRow()">
+                        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+                    </button>
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Giá trị đơn hàng (VNĐ)</label>
-                    <input type="number" id="m-new-order-value" placeholder="Giá trị tự động hoặc nhập tay" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;">
+                    <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Tổng giá trị (VNĐ)</label>
+                    <input type="text" id="m-new-order-value" readonly placeholder="0 đ" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: #f9f9f9; font-weight: bold; color: var(--primary); font-size: 16px;">
+                    <input type="hidden" id="m-edit-order-id" value="">
                 </div>
             </div>
         </div>
