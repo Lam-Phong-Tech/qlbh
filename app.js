@@ -43,7 +43,13 @@ const defaultMockData = {
         { id: 'DH011', customerId: 'KH002', service: 'Loa Bluetooth JBL Flip 6', value: 2900000, saler: 'Nguyễn Admin', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-07-01' },
         { id: 'DH012', customerId: 'KH004', service: 'Loa Soundbar Sony HT-S400', value: 4500000, saler: 'Nguyễn Admin', status: 'Chờ giao hàng', paymentStatus: 'Chưa thanh toán', date: '2026-07-03' },
         { id: 'DH013', customerId: 'KH005', service: 'Loa Karaoke JBL PartyBox 310', value: 14900000, saler: 'Nguyễn Admin', status: 'Chờ lấy hàng', paymentStatus: 'Đã thanh toán', date: '2026-07-04' },
-        { id: 'DH014', customerId: 'KH007', service: 'Dàn Âm thanh Sony MHC-V43D', value: 7500000, saler: 'Nguyễn Admin', status: 'Chờ xác nhận', paymentStatus: 'Chưa thanh toán', date: '2026-07-05' }
+        { id: 'DH014', customerId: 'KH007', service: 'Dàn Âm thanh Sony MHC-V43D', value: 7500000, saler: 'Nguyễn Admin', status: 'Chờ xác nhận', paymentStatus: 'Chưa thanh toán', date: '2026-07-05' },
+        { id: 'DH015', customerId: 'KH001', service: 'Loa Bluetooth Marshall Stanmore III', value: 9500000, saler: 'Trần Sale 1', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-01-15' },
+        { id: 'DH016', customerId: 'KH002', service: 'Loa Karaoke JBL PartyBox 310', value: 14900000, saler: 'Lê Quản Lý', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-02-10' },
+        { id: 'DH017', customerId: 'KH003', service: 'Loa Soundbar Sony HT-S400', value: 4500000, saler: 'Nguyễn Admin', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-03-20' },
+        { id: 'DH018', customerId: 'KH004', service: 'Loa Bluetooth Harman Kardon Aura Studio 4', value: 6900000, saler: 'Trần Sale 1', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-04-05' },
+        { id: 'DH019', customerId: 'KH005', service: 'Loa Bluetooth JBL Flip 6', value: 2900000, saler: 'Lê Quản Lý', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-05-12' },
+        { id: 'DH020', customerId: 'KH006', service: 'Dàn âm thanh Sony MHC-V43D', value: 7500000, saler: 'Nguyễn Admin', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-06-25' }
     ],
     tasks: [
         { id: 'CV001', title: 'Test âm thanh trước khi giao', orderId: 'DH001', assignee: 'Phạm Kỹ Thuật 1', priority: 'Cao', status: 'Hoàn thành', deadline: '2026-07-10', notes: 'Đã kiểm tra kỹ' },
@@ -58,7 +64,7 @@ const defaultMockData = {
         { id: 'CV010', title: 'Viết 15 bài content', orderId: 'DH010', assignee: 'Hoàng Kỹ Thuật 2', priority: 'Trung bình', status: 'Đang làm', deadline: '2026-07-12', notes: 'Đã xong 5 bài' },
         { id: 'CV011', title: 'Review tiến độ', orderId: 'DH002', assignee: 'Nguyễn Admin', priority: 'Thấp', status: 'Chưa làm', deadline: '2026-07-09', notes: '' },
         { id: 'CV012', title: 'Gọi xác nhận yêu cầu', orderId: 'DH007', assignee: 'Trần Sale 1', priority: 'Khẩn cấp', status: 'Hoàn thành', deadline: '2026-07-04', notes: 'Khách muốn màu xanh' },
-        { id: 'CV013', title: 'Bàn giao tài khoản', orderId: 'DH001', assignee: 'Trần Sale 1', priority: 'Thấp', status: 'Hoàn thành', deadline: '2026-07-02', notes: '' },
+        { id: 'CV013', title: 'Bàn giao tài khoản', orderId: 'DH001', assignee: 'Trần Sale 1', status: 'Hoàn thành', deadline: '2026-07-02', notes: '' },
         { id: 'CV014', title: 'Kiểm tra lỗi hiển thị', orderId: 'DH004', assignee: 'Phạm Kỹ Thuật 1', priority: 'Cao', status: 'Quá hạn', deadline: '2026-07-01', notes: 'Lỗi CSS trên safari' },
         { id: 'CV015', title: 'Báo cáo tháng', orderId: '', assignee: 'Lê Quản Lý', priority: 'Trung bình', status: 'Đang làm', deadline: '2026-07-05', notes: '' }
     ]
@@ -645,19 +651,65 @@ const renderReports = () => {
     document.getElementById('report-total-orders').textContent = totalOrdersCount;
     document.getElementById('report-task-completion').textContent = completionRate + '%';
 
-    // Group Revenue Data by Date
-    const revenueByDate = {};
-    filteredOrders.forEach(o => {
-        const d = formatDate(o.date);
-        revenueByDate[d] = (revenueByDate[d] || 0) + o.value;
-    });
+    // Group Revenue Data
+    const revenueLabels = [];
+    const revenueData = [];
+    const revenueByGroup = {};
+    
+    let minDate = null;
+    let maxDate = null;
+    
+    if (timeFilter === 'all') {
+        // Group by Month
+        filteredOrders.forEach(o => {
+            const dateObj = new Date(o.date);
+            const mStr = `${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+            revenueByGroup[mStr] = (revenueByGroup[mStr] || 0) + o.value;
+            
+            if (!minDate || dateObj < minDate) minDate = new Date(dateObj);
+            if (!maxDate || dateObj > maxDate) maxDate = new Date(dateObj);
+        });
 
-    const revenueLabels = Object.keys(revenueByDate).sort((a, b) => {
-        const pA = a.split('/'); const pB = b.split('/');
-        return new Date(pA[2], pA[1]-1, pA[0]) - new Date(pB[2], pB[1]-1, pB[0]);
-    });
-    const revenueData = revenueLabels.map(l => revenueByDate[l]);
+        if (minDate && maxDate) {
+            let current = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+            const end = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+            while (current <= end) {
+                const mStr = `${String(current.getMonth() + 1).padStart(2, '0')}/${current.getFullYear()}`;
+                revenueLabels.push(`Tháng ${mStr}`);
+                revenueData.push(revenueByGroup[mStr] || 0);
+                current.setMonth(current.getMonth() + 1);
+            }
+        }
+    } else {
+        // Group by Date for this/last month
+        filteredOrders.forEach(o => {
+            const dateObj = new Date(o.date);
+            const dStr = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            revenueByGroup[dStr] = (revenueByGroup[dStr] || 0) + o.value;
+            
+            if (!minDate || dateObj < minDate) minDate = new Date(dateObj);
+            if (!maxDate || dateObj > maxDate) maxDate = new Date(dateObj);
+        });
 
+        if (timeFilter === 'this_month') {
+            minDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            maxDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // last day
+        } else if (timeFilter === 'last_month') {
+            minDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            maxDate = new Date(now.getFullYear(), now.getMonth(), 0);
+        }
+
+        if (minDate && maxDate) {
+            let current = new Date(minDate);
+            while (current <= maxDate) {
+                const dStr = `${String(current.getDate()).padStart(2, '0')}/${String(current.getMonth() + 1).padStart(2, '0')}`;
+                revenueLabels.push(dStr);
+                revenueData.push(revenueByGroup[dStr] || 0);
+                current.setDate(current.getDate() + 1);
+            }
+        }
+    }
+    
     if (revenueChartInstance) revenueChartInstance.destroy();
     const ctxRev = document.getElementById('revenueChart').getContext('2d');
     
@@ -750,9 +802,8 @@ const renderReports = () => {
             datasets: [{
                 data: taskData,
                 backgroundColor: taskColors,
-                borderWidth: 3,
-                borderColor: '#ffffff',
-                hoverOffset: 4
+                borderWidth: 0,
+                hoverOffset: 12
             }]
         },
         options: {
