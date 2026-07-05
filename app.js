@@ -660,6 +660,12 @@ const renderReports = () => {
 
     if (revenueChartInstance) revenueChartInstance.destroy();
     const ctxRev = document.getElementById('revenueChart').getContext('2d');
+    
+    // Create gradient
+    let gradient = ctxRev.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(15, 98, 254, 0.8)');   
+    gradient.addColorStop(1, 'rgba(15, 98, 254, 0.2)');
+
     revenueChartInstance = new Chart(ctxRev, {
         type: 'bar',
         data: {
@@ -667,16 +673,59 @@ const renderReports = () => {
             datasets: [{
                 label: 'Doanh thu (VNĐ)',
                 data: revenueData.length ? revenueData : [0],
-                backgroundColor: 'rgba(43, 108, 176, 0.7)',
-                borderColor: 'rgba(43, 108, 176, 1)',
-                borderWidth: 1,
-                borderRadius: 4
+                backgroundColor: gradient,
+                borderColor: 'rgba(15, 98, 254, 1)',
+                borderWidth: 2,
+                borderRadius: 6,
+                barThickness: 40,
+                hoverBackgroundColor: 'rgba(0, 67, 206, 0.9)'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true } }
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    padding: 12,
+                    titleFont: { size: 14, family: "'Segoe UI', sans-serif" },
+                    bodyFont: { size: 14, family: "'Segoe UI', sans-serif" },
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: { 
+                y: { 
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        font: { family: "'Segoe UI', sans-serif" },
+                        callback: function(value, index, values) {
+                            if(value >= 1000000) return (value / 1000000) + 'M';
+                            if(value >= 1000) return (value / 1000) + 'K';
+                            return value;
+                        }
+                    }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { family: "'Segoe UI', sans-serif" } }
+                }
+            }
         }
     });
 
@@ -701,14 +750,23 @@ const renderReports = () => {
             datasets: [{
                 data: taskData,
                 backgroundColor: taskColors,
-                borderWidth: 0
+                borderWidth: 3,
+                borderColor: '#ffffff',
+                hoverOffset: 4
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            cutout: '70%'
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    padding: 10,
+                    bodyFont: { size: 14, family: "'Segoe UI', sans-serif" }
+                }
+            },
+            cutout: '75%'
         }
     });
 
@@ -717,8 +775,14 @@ const renderReports = () => {
     taskLabels.forEach((label, idx) => {
         const val = taskData[idx];
         const pct = filteredTasks.length ? Math.round((val / filteredTasks.length) * 100) : 0;
-        if (val > 0) {
-            taskHtml += `<li><span>${label}:</span> <strong style="color: ${taskColors[idx]}">${val} (${pct}%)</strong></li>`;
+        if (val >= 0) {
+            taskHtml += `<li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 14px; height: 14px; border-radius: 4px; background-color: ${taskColors[idx]}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
+                    <span style="font-size: 14px; color: var(--text-main); font-weight: 500;">${label}</span>
+                </div>
+                <strong style="color: ${taskColors[idx]}; font-size: 16px;">${val} <span style="font-size:13px; font-weight:normal; color:var(--text-secondary);">(${pct}%)</span></strong>
+            </li>`;
         }
     });
     if(!taskHtml) taskHtml = '<li><span>Không có dữ liệu</span></li>';
