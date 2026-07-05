@@ -1,0 +1,1865 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Bán Hàng & Giao Việc</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fa-solid fa-headphones"></i>
+            <span>Audio CRM</span>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-label">Chung</div>
+          <a href="#" class="nav-item active" data-view="dashboard">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+          </a>
+
+          <div class="nav-label">Bán Hàng</div>
+          <a href="#" class="nav-item" data-view="customers">
+            <i class="fa-solid fa-users"></i>
+            <span>Khách hàng</span>
+          </a>
+          <a href="#" class="nav-item" data-view="products">
+            <i class="fa-solid fa-box"></i>
+            <span>Sản phẩm</span>
+          </a>
+          <a href="#" class="nav-item" data-view="pos">
+            <i class="fa-solid fa-cash-register"></i>
+            <span>Bán hàng (POS)</span>
+          </a>
+          <a href="#" class="nav-item" data-view="orders">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Đơn hàng</span>
+          </a>
+
+          <div class="nav-label">Nội Bộ</div>
+          <a href="#" class="nav-item" data-view="tasks">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Công việc</span>
+          </a>
+
+          <div class="nav-label">Khác</div>
+          <a href="#" class="nav-item" data-view="reports">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Báo cáo</span>
+          </a>
+          <a href="#" class="nav-item" data-view="users">
+            <i class="fa-solid fa-user-tie"></i>
+            <span>Nhân sự</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="avatar">AD</div>
+            <div class="details">
+              <div class="name">Nguyễn Admin</div>
+              <div class="role">Admin</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-header" style="display: flex; align-items: center">
+          <h2
+            id="header-title"
+            style="
+              margin: 0;
+              font-size: 20px;
+              font-weight: 600;
+              color: var(--primary);
+            "
+          >
+            Tổng quan
+          </h2>
+          <div class="header-actions" style="margin-left: auto">
+            <button class="icon-btn">
+              <i class="fa-regular fa-bell"></i><span class="badge-dot"></span>
+            </button>
+            <div class="profile-dropdown">
+              <img
+                src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff"
+                alt="Avatar"
+                class="avatar-img"
+              />
+            </div>
+          </div>
+        </header>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+          <div class="spinner"></div>
+        </div>
+
+        <!-- Views Container -->
+        <div class="views-container">
+          <!-- VIEW: DASHBOARD -->
+          <section id="view-dashboard" class="view-section active">
+            <div class="view-header">
+              <h2>Tổng quan</h2>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon bg-blue">
+                  <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Tổng doanh thu</h3>
+                  <div class="stat-value" id="dash-revenue">0 ₫</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-purple">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Khách hàng</h3>
+                  <div class="stat-value" id="dash-customers">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-green">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Đơn hàng</h3>
+                  <div class="stat-value" id="dash-orders">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-orange">
+                  <i class="fa-solid fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Đơn đang xử lý</h3>
+                  <div class="stat-value" id="dash-orders-processing">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-blue-light">
+                  <i class="fa-solid fa-person-digging"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Việc đang làm</h3>
+                  <div class="stat-value" id="dash-tasks-doing">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-red">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Việc quá hạn</h3>
+                  <div class="stat-value" id="dash-tasks-overdue">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div
+                  class="stat-icon bg-orange"
+                  style="background-color: var(--danger)"
+                >
+                  <i class="fa-solid fa-ban"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Đơn hủy / Trả hàng</h3>
+                  <div class="stat-value" id="dash-orders-canceled">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dashboard Tables -->
+            <div class="dashboard-tables">
+              <!-- Sắp đến hạn -->
+              <div class="card">
+                <div class="card-header">
+                  <h3>Công việc sắp đến hạn</h3>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Công việc</th>
+                        <th>Người phụ trách</th>
+                        <th>Deadline</th>
+                        <th>Trạng thái</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-tasks-table">
+                      <!-- Render JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Đơn hàng mới -->
+              <div class="card">
+                <div class="card-header">
+                  <h3>Đơn hàng mới nhất</h3>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Giá trị</th>
+                        <th>Trạng thái</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-orders-table">
+                      <!-- Render JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: SẢN PHẨM -->
+          <section id="view-products" class="view-section hidden">
+            <div class="view-header">
+              <h2>Quản lý Sản phẩm</h2>
+              <button
+                class="btn btn-primary"
+                onclick="app.openCreateProductModal()"
+              >
+                <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+              </button>
+            </div>
+            <div class="card">
+              <div class="filter-bar">
+                <div class="search-input">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input
+                    type="text"
+                    id="search-product"
+                    placeholder="Tìm theo tên SP..."
+                  />
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Mã SP</th>
+                      <th>Sản phẩm</th>
+                      <th>Phân loại</th>
+                      <th>Bảo hành</th>
+                      <th>Đơn giá</th>
+                      <th>Tồn kho</th>
+                      <th>Trạng thái</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="products-table">
+                    <!-- Render JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: POS BÁN HÀNG -->
+          <section id="view-pos" class="view-section hidden">
+            <div class="view-header">
+              <h2>Bán hàng (POS)</h2>
+            </div>
+            <div class="pos-container">
+              <!-- Cột sản phẩm -->
+              <div class="pos-products-area card">
+                <div
+                  class="filter-bar"
+                  style="
+                    margin-bottom: 15px;
+                    border-bottom: 1px solid var(--border);
+                    padding-bottom: 15px;
+                  "
+                >
+                  <div class="search-input" style="width: 100%">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                      type="text"
+                      id="search-pos"
+                      placeholder="Tìm kiếm sản phẩm loa..."
+                      oninput="app.renderPOSProducts()"
+                    />
+                  </div>
+                </div>
+                <div class="pos-products-grid" id="pos-products-grid">
+                  <!-- Render JS -->
+                </div>
+              </div>
+
+              <!-- Cột giỏ hàng -->
+              <div class="pos-cart-panel card">
+                <div class="card-header" style="padding-bottom: 0">
+                  <h3 style="margin-bottom: 10px">Giỏ hàng</h3>
+                  <div class="pos-cart-tabs" id="pos-cart-tabs">
+                    <!-- Render JS -->
+                  </div>
+                </div>
+                <div
+                  class="card-body"
+                  style="display: flex; flex-direction: column; height: 100%"
+                >
+                  <div class="pos-cart-items" id="pos-cart-items">
+                    <!-- Render JS -->
+                  </div>
+                  <div class="pos-cart-summary">
+                    <div class="form-group" style="margin-bottom: 15px">
+                      <label>Khách hàng (Tùy chọn)</label>
+                      <select id="pos-customer" style="width: 100%">
+                        <!-- Render JS -->
+                      </select>
+                    </div>
+                    <div class="summary-row">
+                      <span>Tổng phụ:</span>
+                      <span id="pos-subtotal" style="font-weight: 600"
+                        >0 đ</span
+                      >
+                    </div>
+                    <div
+                      class="summary-row"
+                      style="
+                        border-top: 1px dashed var(--border);
+                        padding-top: 10px;
+                        margin-top: 10px;
+                      "
+                    >
+                      <span
+                        style="
+                          font-size: 16px;
+                          font-weight: bold;
+                          color: var(--text-primary);
+                        "
+                        >TỔNG TIỀN:</span
+                      >
+                      <span
+                        id="pos-total"
+                        style="
+                          font-size: 18px;
+                          font-weight: bold;
+                          color: var(--primary);
+                        "
+                        >0 đ</span
+                      >
+                    </div>
+                    <button
+                      class="btn btn-primary"
+                      style="
+                        width: 100%;
+                        height: 45px;
+                        margin-top: 15px;
+                        font-size: 15px;
+                        font-weight: bold;
+                      "
+                      onclick="app.openPOSPaymentModal()"
+                    >
+                      <i class="fa-solid fa-money-bill-wave"></i> THANH TOÁN
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: KHÁCH HÀNG -->
+          <section id="view-customers" class="view-section hidden">
+            <div class="view-header">
+              <h2>Khách hàng</h2>
+              <button
+                class="btn btn-primary"
+                onclick="app.openCreateCustomerModal()"
+              >
+                <i class="fa-solid fa-plus"></i> Thêm khách hàng
+              </button>
+            </div>
+            <div class="card">
+              <div class="filter-bar">
+                <div class="search-input">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input
+                    type="text"
+                    id="search-customer"
+                    placeholder="Tìm theo tên, SĐT..."
+                  />
+                </div>
+                <select class="filter-select" id="filter-customer-source">
+                  <option value="all">Tất cả nguồn</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="Website">Website</option>
+                  <option value="Giới thiệu">Giới thiệu</option>
+                </select>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Tên khách hàng</th>
+                      <th>Số điện thoại</th>
+                      <th>Email</th>
+                      <th>Nguồn</th>
+                      <th>Ngày tạo</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customers-table">
+                    <!-- Render JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: CHI TIẾT KHÁCH HÀNG -->
+          <section id="view-customer-detail" class="view-section hidden">
+            <div class="view-header">
+              <div class="breadcrumb">
+                <a href="#" onclick="app.navigate('customers')">Khách hàng</a>
+                <i
+                  class="fa-solid fa-chevron-right"
+                  style="font-size: 12px; margin-top: 4px; color: #999"
+                ></i>
+                <span class="current">Chi tiết</span>
+              </div>
+              <div class="actions">
+                <button
+                  class="btn btn-secondary"
+                  onclick="
+                    app.openEditCustomerModal(appState.currentCustomerId)
+                  "
+                  style="margin-right: 8px"
+                >
+                  <i class="fa-solid fa-pen"></i> Sửa thông tin
+                </button>
+                <button
+                  class="btn btn-primary"
+                  onclick="app.openCreateOrderFromCustomer()"
+                >
+                  <i class="fa-solid fa-cart-plus"></i> Tạo đơn hàng
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="dashboard-tables"
+              style="grid-template-columns: 1fr; gap: 24px"
+            >
+              <!-- Cột trái: Thông tin -->
+              <div class="card">
+                <div class="card-header">
+                  <h3>Thông tin khách hàng</h3>
+                </div>
+                <div class="card-body">
+                  <div id="customer-detail-info" class="detail-grid">
+                    <!-- Render JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cột phải: Lịch sử -->
+              <div class="card">
+                <div class="card-header">
+                  <h3>Lịch sử mua hàng</h3>
+                </div>
+                <div class="card-body table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Mã đơn</th>
+                        <th>Sản phẩm/Dịch vụ</th>
+                        <th>Giá trị</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                      </tr>
+                    </thead>
+                    <tbody id="customer-orders-table">
+                      <!-- Render JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: ĐƠN HÀNG -->
+          <section id="view-orders" class="view-section hidden">
+            <div class="view-header">
+              <h2>Đơn hàng</h2>
+              <button
+                class="btn btn-primary"
+                onclick="app.openModal('order-modal')"
+              >
+                <i class="fa-solid fa-plus"></i> Tạo đơn hàng
+              </button>
+            </div>
+            <div class="card">
+              <div class="filter-bar">
+                <div class="search-input">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input
+                    type="text"
+                    id="search-order"
+                    placeholder="Tìm theo mã, tên khách..."
+                  />
+                </div>
+                <select class="filter-select" id="filter-order-status">
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="Chờ xác nhận">Chờ xác nhận</option>
+                  <option value="Chờ lấy hàng">Chờ lấy hàng</option>
+                  <option value="Chờ giao hàng">Chờ giao hàng</option>
+                  <option value="Đã giao">Đã giao</option>
+                  <option value="Chờ duyệt trả hàng">Chờ duyệt trả hàng</option>
+                  <option value="Trả hàng">Trả hàng</option>
+                  <option value="Đã hủy">Đã hủy</option>
+                </select>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Mã đơn</th>
+                      <th>Khách hàng</th>
+                      <th>Tên dịch vụ</th>
+                      <th>Giá trị</th>
+                      <th>Phụ trách</th>
+                      <th>Trạng thái</th>
+                      <th>Ngày tạo</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="orders-table">
+                    <!-- Render JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: CHI TIẾT ĐƠN HÀNG -->
+          <section id="view-order-detail" class="view-section hidden">
+            <div class="view-header">
+              <div class="breadcrumb">
+                <a href="#" onclick="app.navigate('orders')">Đơn hàng</a>
+                <span>/</span>
+                <span class="current">Chi tiết</span>
+              </div>
+              <div class="actions">
+                <div
+                  id="order-action-buttons"
+                  style="display: inline-flex; gap: 8px"
+                >
+                  <!-- Render JS Action Buttons -->
+                </div>
+                <button
+                  class="btn btn-primary"
+                  onclick="app.openCreateTaskFromOrder()"
+                >
+                  <i class="fa-solid fa-plus"></i> Giao việc
+                </button>
+              </div>
+            </div>
+            <div
+              class="dashboard-tables"
+              style="grid-template-columns: 1fr; gap: 24px"
+            >
+              <div class="card">
+                <div class="card-header">
+                  <h3>Thông tin đơn hàng</h3>
+                </div>
+                <div class="card-body" id="order-detail-info">
+                  <!-- Render JS -->
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <h3>Công việc liên quan</h3>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Tên việc</th>
+                        <th>Người phụ trách</th>
+                        <th>Deadline</th>
+                        <th>Trạng thái</th>
+                      </tr>
+                    </thead>
+                    <tbody id="order-tasks-table">
+                      <!-- Render JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: CÔNG VIỆC -->
+          <section id="view-tasks" class="view-section hidden">
+            <div class="view-header">
+              <h2>Công việc nội bộ</h2>
+              <button
+                class="btn btn-primary"
+                onclick="app.openModal('task-modal')"
+              >
+                <i class="fa-solid fa-plus"></i> Tạo công việc
+              </button>
+            </div>
+            <div class="card">
+              <div class="filter-bar">
+                <select class="filter-select" id="filter-task-status">
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="Chưa làm">Chưa làm</option>
+                  <option value="Đang làm">Đang làm</option>
+                  <option value="Chờ duyệt">Chờ duyệt</option>
+                  <option value="Hoàn thành">Hoàn thành</option>
+                  <option value="Quá hạn">Quá hạn</option>
+                </select>
+                <select class="filter-select" id="filter-task-assignee">
+                  <option value="all">Tất cả người phụ trách</option>
+                  <!-- JS fill options -->
+                </select>
+              </div>
+              <div
+                class="view-toggle-bar"
+                style="display: flex; gap: 10px; margin-bottom: 15px"
+              >
+                <button
+                  class="btn btn-outline active"
+                  id="btn-view-kanban"
+                  onclick="app.toggleTaskView('kanban')"
+                >
+                  <i class="fa-solid fa-table-columns"></i> Kanban
+                </button>
+                <button
+                  class="btn btn-outline"
+                  id="btn-view-table"
+                  onclick="app.toggleTaskView('table')"
+                >
+                  <i class="fa-solid fa-list"></i> Danh sách
+                </button>
+              </div>
+
+              <!-- Kanban View -->
+              <div class="kanban-board" id="tasks-kanban">
+                <div class="kanban-column" data-status="Chưa làm">
+                  <div class="kanban-column-header">
+                    <h3>Chưa làm</h3>
+                    <span class="kanban-count">0</span>
+                  </div>
+                  <div class="kanban-cards" id="kanban-todo">
+                    <!-- Render JS -->
+                  </div>
+                </div>
+                <div class="kanban-column" data-status="Đang làm">
+                  <div class="kanban-column-header">
+                    <h3>Đang làm</h3>
+                    <span class="kanban-count">0</span>
+                  </div>
+                  <div class="kanban-cards" id="kanban-doing">
+                    <!-- Render JS -->
+                  </div>
+                </div>
+                <div class="kanban-column" data-status="Hoàn thành">
+                  <div class="kanban-column-header">
+                    <h3>Hoàn thành</h3>
+                    <span class="kanban-count">0</span>
+                  </div>
+                  <div class="kanban-cards" id="kanban-done">
+                    <!-- Render JS -->
+                  </div>
+                </div>
+                <div class="kanban-column" data-status="Quá hạn">
+                  <div class="kanban-column-header">
+                    <h3>Quá hạn</h3>
+                    <span class="kanban-count">0</span>
+                  </div>
+                  <div class="kanban-cards" id="kanban-overdue">
+                    <!-- Render JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Table View (Hidden by default) -->
+              <div class="table-responsive hidden" id="tasks-table-view">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Tên công việc</th>
+                      <th>Đơn hàng l.kết</th>
+                      <th>Người phụ trách</th>
+                      <th>Mức ưu tiên</th>
+                      <th>Deadline</th>
+                      <th>Trạng thái</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tasks-table">
+                    <!-- Render JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: CHI TIẾT CÔNG VIỆC -->
+          <section id="view-task-detail" class="view-section hidden">
+            <div class="view-header">
+              <div class="breadcrumb">
+                <a href="#" onclick="app.navigate('tasks')">Công việc</a>
+                <span>/</span>
+                <span class="current">Chi tiết</span>
+              </div>
+              <div class="actions">
+                <button
+                  class="btn btn-primary"
+                  onclick="app.openUpdateTaskStatusModal()"
+                >
+                  Cập nhật tiến độ
+                </button>
+              </div>
+            </div>
+            <div class="card max-w-800">
+              <div class="card-header">
+                <h3>Chi tiết công việc</h3>
+              </div>
+              <div class="card-body" id="task-detail-info">
+                <!-- Render JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: BÁO CÁO -->
+          <section id="view-reports" class="view-section hidden">
+            <div
+              class="view-header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <h2>Báo cáo tổng quan</h2>
+              <div>
+                <select
+                  class="filter-select"
+                  id="filter-report-time"
+                  onchange="app.renderReports()"
+                >
+                  <option value="all">Tất cả thời gian</option>
+                  <option value="this_month">Tháng này</option>
+                  <option value="last_month">Tháng trước</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tổng quan số liệu -->
+            <div
+              class="report-summary-cards"
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 20px;
+              "
+            >
+              <div
+                class="card"
+                style="
+                  padding: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 15px;
+                "
+              >
+                <div
+                  style="
+                    background: rgba(43, 108, 176, 0.1);
+                    color: var(--primary);
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                  "
+                >
+                  <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                  <div
+                    style="
+                      font-size: 13px;
+                      color: var(--text-secondary);
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Doanh thu thực tế
+                  </div>
+                  <h3
+                    id="report-total-revenue"
+                    style="font-size: 20px; margin: 0"
+                  >
+                    0 đ
+                  </h3>
+                </div>
+              </div>
+              <div
+                class="card"
+                style="
+                  padding: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 15px;
+                "
+              >
+                <div
+                  style="
+                    background: rgba(40, 167, 69, 0.1);
+                    color: var(--success);
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                  "
+                >
+                  <i class="fa-solid fa-box"></i>
+                </div>
+                <div>
+                  <div
+                    style="
+                      font-size: 13px;
+                      color: var(--text-secondary);
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Số đơn hàng
+                  </div>
+                  <h3
+                    id="report-total-orders"
+                    style="font-size: 20px; margin: 0"
+                  >
+                    0
+                  </h3>
+                </div>
+              </div>
+              <div
+                class="card"
+                style="
+                  padding: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 15px;
+                "
+              >
+                <div
+                  style="
+                    background: rgba(255, 193, 7, 0.1);
+                    color: var(--warning);
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                  "
+                >
+                  <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                  <div
+                    style="
+                      font-size: 13px;
+                      color: var(--text-secondary);
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Công việc hoàn thành
+                  </div>
+                  <h3
+                    id="report-task-completion"
+                    style="font-size: 20px; margin: 0"
+                  >
+                    0%
+                  </h3>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="stats-grid"
+              style="grid-template-columns: 2fr 1fr; align-items: start"
+            >
+              <div class="card">
+                <div class="card-header"><h3>Doanh thu theo thời gian</h3></div>
+                <div class="card-body">
+                  <canvas
+                    id="revenueChart"
+                    style="width: 100%; height: 300px"
+                  ></canvas>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h3>Hiệu suất công việc</h3></div>
+                <div
+                  class="card-body"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
+                >
+                  <div style="width: 200px; height: 200px; margin-bottom: 20px">
+                    <canvas id="taskChart"></canvas>
+                  </div>
+                  <ul
+                    class="performance-list"
+                    id="report-task-list"
+                    style="width: 100%"
+                  >
+                    <!-- Render JS -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- VIEW: NHÂN SỰ -->
+          <section id="view-users" class="view-section hidden">
+            <div class="view-header">
+              <h2>Quản lý nhân sự</h2>
+              <button class="btn btn-primary" onclick="app.openEditUserModal()">
+                <i class="fa-solid fa-plus"></i> Thêm nhân sự
+              </button>
+            </div>
+            <div class="card">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Tên nhân viên</th>
+                    <th>Vai trò</th>
+                    <th>SĐT</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table">
+                  <!-- Render JS -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <!-- End Views Container -->
+      </main>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Modal Khách Hàng -->
+    <div id="customer-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="customer-modal-title">Thêm khách hàng</h3>
+          <button class="close-btn" onclick="app.closeModal('customer-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form
+            id="customer-form"
+            onsubmit="
+              event.preventDefault();
+              app.saveCustomer();
+            "
+          >
+            <input type="hidden" id="cust-id" />
+            <div class="form-group">
+              <label>Tên khách hàng <span class="required">*</span></label>
+              <input type="text" id="cust-name" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Số điện thoại <span class="required">*</span></label>
+                <input type="text" id="cust-phone" required />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="cust-email" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Nguồn khách</label>
+              <select id="cust-source">
+                <option value="Facebook">Facebook</option>
+                <option value="Website">Website</option>
+                <option value="Giới thiệu">Giới thiệu</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ</label>
+              <input type="text" id="cust-address" />
+            </div>
+            <div class="form-group">
+              <label>Ghi chú</label>
+              <textarea id="cust-note" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('customer-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveCustomer()">
+            Lưu lại
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Đơn Hàng -->
+    <div id="order-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="order-modal-title">Tạo đơn hàng mới</h3>
+          <button class="close-btn" onclick="app.closeModal('order-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="order-form">
+            <div class="form-group">
+              <label>Khách hàng <span class="required">*</span></label>
+              <select id="order-customer" required>
+                <!-- JS fill -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Sản phẩm/Dịch vụ <span class="required">*</span></label>
+              <select
+                id="order-service"
+                required
+                onchange="app.onProductSelectChange()"
+              >
+                <option value="">-- Chọn sản phẩm --</option>
+                <!-- JS fill -->
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Số lượng <span class="required">*</span></label>
+                <input
+                  type="number"
+                  min="0"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  id="order-qty"
+                  value="1"
+                  min="1"
+                  required
+                  oninput="app.onQuantityChange()"
+                />
+              </div>
+              <div class="form-group">
+                <label>Giá trị (VNĐ) <span class="required">*</span></label>
+                <input
+                  type="number"
+                  min="0"
+                  id="order-value"
+                  required
+                  readonly
+                  style="
+                    background-color: var(--bg-body);
+                    cursor: not-allowed;
+                    color: var(--text-secondary);
+                  "
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Người phụ trách bán hàng</label>
+                <select id="order-saler">
+                  <!-- JS fill -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Thanh toán</label>
+                <select id="order-payment-status">
+                  <option value="Chưa thanh toán">Chưa thanh toán</option>
+                  <option value="Thanh toán một phần">
+                    Thanh toán một phần
+                  </option>
+                  <option value="Đã thanh toán">Đã thanh toán</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Ghi chú</label>
+              <textarea id="order-note" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('order-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveOrder()">
+            Tạo đơn hàng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Yêu Cầu Trả Hàng -->
+    <div id="return-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Yêu cầu trả hàng</h3>
+          <button class="close-btn" onclick="app.closeModal('return-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="return-form">
+            <div class="form-group">
+              <label>Lý do trả hàng <span class="required">*</span></label>
+              <textarea
+                id="return-reason"
+                rows="3"
+                required
+                placeholder="Nhập lý do khách hàng muốn trả lại..."
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label
+                >Ảnh đính kèm (Tối đa 5 ảnh)
+                <span class="required">*</span></label
+              >
+              <input
+                type="file"
+                id="return-images"
+                accept="image/*"
+                multiple
+                required
+              />
+              <div
+                id="return-image-preview"
+                class="image-preview-container"
+              ></div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('return-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-danger" onclick="app.submitReturnRequest()">
+            Gửi yêu cầu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Sản Phẩm -->
+    <div id="product-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="product-modal-title">Thêm Sản phẩm</h3>
+          <button class="close-btn" onclick="app.closeModal('product-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="product-form">
+            <input type="hidden" id="prod-id" />
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tên sản phẩm <span class="required">*</span></label>
+                <input type="text" id="prod-name" required />
+              </div>
+              <div class="form-group">
+                <label>Thương hiệu <span class="required">*</span></label>
+                <select id="prod-brand" required>
+                  <option value="JBL">JBL</option>
+                  <option value="Sony">Sony</option>
+                  <option value="Marshall">Marshall</option>
+                  <option value="Harman Kardon">Harman Kardon</option>
+                  <option value="Bose">Bose</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phân loại <span class="required">*</span></label>
+                <select id="prod-category" required>
+                  <option value="Loa Bluetooth">Loa Bluetooth</option>
+                  <option value="Loa Karaoke/Kéo">Loa Karaoke/Kéo</option>
+                  <option value="Soundbar">Soundbar</option>
+                  <option value="Loa Vi Tính">Loa Vi Tính</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Đơn giá (VNĐ) <span class="required">*</span></label>
+                <input
+                  type="number"
+                  min="0"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  id="prod-price"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Công suất (W)</label>
+                <input
+                  type="number"
+                  min="0"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  id="prod-power"
+                  placeholder="Ví dụ: 100"
+                />
+              </div>
+              <div class="form-group">
+                <label>Thời lượng pin (Giờ)</label>
+                <input
+                  type="number"
+                  min="0"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  id="prod-battery"
+                  placeholder="Ví dụ: 12"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Bảo hành (Tháng)</label>
+                <input
+                  type="number"
+                  min="0"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  id="prod-warranty"
+                  value="12"
+                />
+              </div>
+              <div class="form-group">
+                <label>Số lượng tồn kho</label>
+                <input
+                  type="number"
+                  min="0"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  id="prod-stock"
+                  value="0"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Kích thước</label>
+                <input
+                  type="text"
+                  id="prod-size"
+                  placeholder="VD: 150 x 200 x 300 mm"
+                />
+              </div>
+              <div class="form-group">
+                <label>Trọng lượng (kg)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  id="prod-weight"
+                  placeholder="VD: 5.5"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Kết nối</label>
+              <input
+                type="text"
+                id="prod-connections"
+                placeholder="VD: Bluetooth 5.0, AUX, USB"
+              />
+            </div>
+            <div class="form-group">
+              <label>Mô tả chi tiết</label>
+              <textarea
+                id="prod-description"
+                rows="3"
+                placeholder="Thông tin chi tiết về sản phẩm..."
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label>Hình ảnh sản phẩm</label>
+              <input type="file" id="prod-image" accept="image/*" />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('product-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveProduct()">
+            Lưu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Nhập Kho -->
+    <div id="import-stock-modal" class="modal">
+      <div class="modal-content modal-sm">
+        <div class="modal-header">
+          <h3>Nhập Kho Sản Phẩm</h3>
+          <button
+            class="close-btn"
+            onclick="app.closeModal('import-stock-modal')"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="import-stock-form">
+            <input type="hidden" id="import-prod-id" />
+            <div class="form-group">
+              <label>Tên sản phẩm</label>
+              <input
+                type="text"
+                id="import-prod-name"
+                readonly
+                style="background-color: #f4f4f4"
+              />
+            </div>
+            <div class="form-group">
+              <label>Số lượng nhập thêm <span class="required">*</span></label>
+              <input
+                type="number"
+                min="0"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                id="import-prod-qty"
+                min="1"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('import-stock-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveImportStock()">
+            Nhập kho
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Công Việc -->
+    <div id="task-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="task-modal-title">Giao việc mới</h3>
+          <button class="close-btn" onclick="app.closeModal('task-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="task-form">
+            <div class="form-group">
+              <label>Tên công việc <span class="required">*</span></label>
+              <input type="text" id="task-title" required />
+            </div>
+            <div class="form-group">
+              <label>Đơn hàng liên kết (Tùy chọn)</label>
+              <select id="task-order">
+                <option value="">-- Không liên kết --</option>
+                <!-- JS fill -->
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Người phụ trách <span class="required">*</span></label>
+                <select id="task-assignee" required>
+                  <!-- JS fill -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Mức độ ưu tiên</label>
+                <select id="task-priority">
+                  <option value="Thấp">Thấp</option>
+                  <option value="Trung bình" selected>Trung bình</option>
+                  <option value="Cao">Cao</option>
+                  <option value="Khẩn cấp">Khẩn cấp</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Deadline <span class="required">*</span></label>
+              <input type="date" id="task-deadline" required />
+            </div>
+            <div class="form-group">
+              <label>Mô tả chi tiết</label>
+              <textarea id="task-desc" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('task-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveTask()">
+            Giao việc
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Cập Nhật Trạng Thái Việc -->
+    <div id="update-task-status-modal" class="modal">
+      <div class="modal-content modal-sm">
+        <div class="modal-header">
+          <h3>Cập nhật tiến độ</h3>
+          <button
+            class="close-btn"
+            onclick="app.closeModal('update-task-status-modal')"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select id="update-task-status-select">
+              <option value="Chưa làm">Chưa làm</option>
+              <option value="Đang làm">Đang làm</option>
+              <option value="Chờ duyệt">Chờ duyệt</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú tiến độ</label>
+            <textarea
+              id="update-task-note"
+              rows="2"
+              placeholder="VD: Đã làm xong phần 1..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('update-task-status-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveTaskStatus()">
+            Cập nhật
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="modal">
+      <div class="modal-content modal-sm">
+        <div class="modal-header">
+          <h3>Xác nhận</h3>
+          <button class="close-btn" onclick="app.closeModal('confirm-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="confirm-message">
+            Bạn có chắc chắn muốn thực hiện thao tác này?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('confirm-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-danger" id="confirm-btn">Đồng ý</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal POS Thanh Toán -->
+    <div id="pos-payment-modal" class="modal">
+      <div class="modal-content" style="max-width: 500px">
+        <div class="modal-header">
+          <h3>Xác nhận Thanh toán</h3>
+          <button
+            class="close-btn"
+            onclick="app.closeModal('pos-payment-modal')"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size: 18px; text-align: center; margin-bottom: 15px">
+            Tổng cần thanh toán:
+            <strong style="color: var(--primary)" id="pos-payment-total"
+              >0 đ</strong
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Phương thức thanh toán:</label>
+            <div class="pos-payment-methods">
+              <button
+                class="btn pos-method-btn active"
+                id="pos-method-cash"
+                onclick="app.selectPOSPaymentMethod('cash')"
+              >
+                <i class="fa-solid fa-money-bill"></i> Tiền mặt
+              </button>
+              <button
+                class="btn pos-method-btn"
+                id="pos-method-transfer"
+                onclick="app.selectPOSPaymentMethod('transfer')"
+              >
+                <i class="fa-solid fa-qrcode"></i> Chuyển khoản
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="pos-qr-box"
+            style="display: none; text-align: center; margin-top: 20px"
+          >
+            <p style="margin-bottom: 10px; font-weight: 500">
+              Quét mã QR để thanh toán:
+            </p>
+            <img
+              src="https://api.vietqr.io/image/970436-0901234567-cZpTh8B.jpg?amount=0&addInfo=Thanh%20toan%20don%20hang"
+              id="pos-qr-image"
+              alt="QR Code"
+              style="
+                width: 250px;
+                height: 250px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 10px;
+              "
+            />
+            <p
+              style="
+                margin-top: 10px;
+                color: var(--text-secondary);
+                font-size: 13px;
+              "
+            >
+              *Đây là mã QR Demo
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('pos-payment-modal')"
+          >
+            Hủy
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="app.checkoutPOS()"
+            style="padding: 10px 20px; font-size: 16px"
+          >
+            <i class="fa-solid fa-check-circle"></i> Đã thanh toán
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Chi Tiết Nhân Sự -->
+    <div id="user-detail-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="user-detail-modal-title">Hồ sơ Nhân sự</h3>
+          <button
+            class="close-btn"
+            onclick="app.closeModal('user-detail-modal')"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-grid" id="user-detail-info">
+            <!-- Render JS -->
+          </div>
+          <div style="margin-top: 20px">
+            <h4 style="margin-bottom: 10px; color: var(--text-primary)">
+              Giấy tờ tùy thân (CCCD/CMND)
+            </h4>
+            <div style="display: flex; gap: 15px">
+              <div
+                style="
+                  flex: 1;
+                  border: 1px dashed var(--border);
+                  border-radius: 8px;
+                  padding: 10px;
+                  text-align: center;
+                "
+              >
+                <p
+                  style="
+                    font-size: 13px;
+                    color: var(--text-secondary);
+                    margin-bottom: 5px;
+                  "
+                >
+                  Mặt trước
+                </p>
+                <img
+                  id="user-cccd-front"
+                  src=""
+                  style="max-width: 100%; border-radius: 4px; display: none"
+                />
+              </div>
+              <div
+                style="
+                  flex: 1;
+                  border: 1px dashed var(--border);
+                  border-radius: 8px;
+                  padding: 10px;
+                  text-align: center;
+                "
+              >
+                <p
+                  style="
+                    font-size: 13px;
+                    color: var(--text-secondary);
+                    margin-bottom: 5px;
+                  "
+                >
+                  Mặt sau
+                </p>
+                <img
+                  id="user-cccd-back"
+                  src=""
+                  style="max-width: 100%; border-radius: 4px; display: none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('user-detail-modal')"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Thêm/Sửa Nhân Sự -->
+    <div id="edit-user-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="edit-user-modal-title">Cập nhật Nhân sự</h3>
+          <button class="close-btn" onclick="app.closeModal('edit-user-modal')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-user-form">
+            <input type="hidden" id="edit-user-id" />
+            <div class="form-row">
+              <div class="form-group">
+                <label>Họ và tên <span class="required">*</span></label>
+                <input type="text" id="edit-user-name" required />
+              </div>
+              <div class="form-group">
+                <label>Vai trò <span class="required">*</span></label>
+                <select id="edit-user-role" required>
+                  <option value="Admin">Admin</option>
+                  <option value="Quản lý">Quản lý</option>
+                  <option value="Bán hàng">Bán hàng</option>
+                  <option value="Xử lý">Xử lý (Kỹ thuật/Giao hàng)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" id="edit-user-phone" />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="edit-user-email" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mật khẩu đăng nhập</label>
+                <input
+                  type="text"
+                  id="edit-user-password"
+                  placeholder="***"
+                  title="Trong thực tế mật khẩu sẽ được mã hóa"
+                />
+              </div>
+              <div class="form-group">
+                <label>Trạng thái</label>
+                <select id="edit-user-status">
+                  <option value="Hoạt động">Hoạt động</option>
+                  <option value="Khóa">Khóa tài khoản</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 5px">
+              <label>Tải lên Giấy tờ (CCCD/CMND)</label>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label
+                  style="
+                    font-size: 13px;
+                    color: var(--text-secondary);
+                    font-weight: normal;
+                  "
+                  >Mặt trước</label
+                >
+                <input type="file" id="edit-user-cccd-front" accept="image/*" />
+              </div>
+              <div class="form-group">
+                <label
+                  style="
+                    font-size: 13px;
+                    color: var(--text-secondary);
+                    font-weight: normal;
+                  "
+                  >Mặt sau</label
+                >
+                <input type="file" id="edit-user-cccd-back" accept="image/*" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="app.closeModal('edit-user-modal')"
+          >
+            Hủy
+          </button>
+          <button class="btn btn-primary" onclick="app.saveUserEdit()">
+            Lưu thông tin
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audio Element for Success Sound -->
+    <audio
+      id="pos-success-audio"
+      src="https://actions.google.com/sounds/v1/office/cash_register.ogg"
+      preload="auto"
+    ></audio>
+
+    <script src="app.js"></script>
+
+    <!-- Modal Chi Tiết Khách Hàng -->
+    <div id="customer-detail-modal" class="modal">
+      <div class="modal-content" style="max-width: 700px">
+        <div class="modal-header">
+          <h3 id="customer-detail-modal-title">Chi Tiết Khách Hàng</h3>
+          <button
+            class="close-btn"
+            onclick="app.closeModal('customer-detail-modal')"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card" style="margin-bottom: 20px">
+            <div class="card-header">
+              <h3>Thông tin khách hàng</h3>
+            </div>
+            <div class="card-body">
+              <div id="customer-detail-info" class="detail-grid">
+                <!-- JS render -->
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Lịch sử mua hàng</h3>
+            </div>
+            <div class="card-body table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Dịch vụ/Sản phẩm</th>
+                    <th>Giá trị</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày</th>
+                  </tr>
+                </thead>
+                <tbody id="customer-orders-table">
+                  <!-- JS render -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

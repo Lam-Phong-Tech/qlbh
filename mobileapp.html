@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio CRM - Mobile App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f62fe;
+            --bg: #f4f7f6;
+            --surface: #ffffff;
+            --text-main: #161616;
+            --text-sec: #525252;
+            --border: #e0e0e0;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        
+        body {
+            background-color: #ffffff; /* White background for desktop */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile Web App Container */
+        .device-wrapper {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            background-color: var(--bg);
+        }
+
+        .device-frame {
+            width: 100%;
+            max-width: 480px; /* Standard mobile max width */
+            height: 100vh;
+            background-color: var(--surface);
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        .m-header {
+            background: var(--surface);
+            padding: 20px 20px 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            z-index: 90;
+        }
+        .m-header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .m-header-user {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .m-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg);
+            padding-bottom: 80px; /* Space for footer */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .m-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        .m-view {
+            display: none;
+            padding: 15px;
+        }
+        .m-view.active {
+            display: block;
+        }
+        
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-main); }
+
+        /* Mobile List Cards */
+        .m-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+        }
+        .m-card-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: flex-start;}
+        .m-card-title { font-weight: 600; font-size: 15px; color: var(--text-main); }
+        .m-card-subtitle { font-size: 13px; color: var(--text-sec); margin-bottom: 5px; }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .badge-info { background: #e5f0ff; color: #0f62fe; }
+        .badge-success { background: #defbe6; color: #198038; }
+        .badge-warning { background: #fdf5d3; color: #f1c21b; }
+        .badge-danger { background: #fff1f1; color: #da1e28; }
+
+        .m-btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .m-btn { flex: 1; padding: 8px; text-align: center; border-radius: 6px; font-size: 13px; font-weight: 600; border: none; cursor: pointer;}
+        .m-btn-primary { background: rgba(15, 98, 254, 0.1); color: var(--primary); }
+        .m-btn-success { background: rgba(25, 128, 56, 0.1); color: #198038; }
+
+        /* Profile List Menu */
+        .m-list {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .m-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .m-list-item:last-child { border-bottom: none; }
+        .m-list-item i.icon-left { width: 24px; color: var(--text-sec); margin-right: 10px; }
+        .m-list-item i.icon-right { color: #ccc; font-size: 12px; }
+        .m-list-item.text-danger { color: #da1e28; }
+        .m-list-item.text-danger i.icon-left { color: #da1e28; }
+        
+        /* Bottom Navigation */
+        .m-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 10px; /* Safe area */
+            z-index: 100;
+        }
+        .m-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-sec);
+            font-size: 11px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 25%;
+            transition: color 0.2s;
+        }
+        .m-tab i { font-size: 20px; }
+        .m-tab.active { color: var(--primary); }
+        
+    </style>
+</head>
+<body>
+    
+    <div class="device-wrapper">
+        <div class="device-frame">
+        
+        <div class="m-header">
+            <div class="m-header-title"><i class="fa-solid fa-headphones"></i> AudioApp</div>
+            <div class="m-header-user">AD</div>
+        </div>
+
+        <div class="m-content">
+            <!-- VIEW TASKS -->
+            <div id="m-view-tasks" class="m-view active">
+                <div class="section-title">Công việc của tôi</div>
+                <div id="m-tasks-list">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- VIEW REPORTS (KPI) -->
+            <div id="m-view-reports" class="m-view">
+                <div class="section-title">Báo cáo & KPI</div>
+                <div class="m-card" style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: var(--text-sec); font-size: 14px; margin-bottom: 5px;">Doanh thu cá nhân tháng này</p>
+                    <h2 id="m-kpi-revenue" style="color: var(--primary); font-size: 28px; margin-bottom: 15px;">0 đ</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1; padding: 10px; background: #f0f4ff; border-radius: 8px;">
+                            <div style="font-size: 18px; font-weight: bold; color: var(--primary);" id="m-kpi-orders">0</div>
+                            <div style="font-size: 12px; color: var(--text-sec);">Đơn hàng</div>
+                        </div>
+                        <div style="flex: 1; padding: 10px; background: #f0fdf4; border-radius: 8px;">
+                            <div style="font-size: 18px; font-weight: bold; color: #16a34a;" id="m-kpi-tasks">0%</div>
+                            <div style="font-size: 12px; color: var(--text-sec);">Hoàn thành CV</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW ORDERS -->
+            <div id="m-view-orders" class="m-view" style="position: relative; height: 100%;">
+                <div class="section-title">Đơn hàng của tôi</div>
+                <div id="m-orders-list">
+                    <!-- Rendered by JS -->
+                </div>
+                <button class="m-fab" onclick="mApp.openCreateOrderModal()" style="position: absolute; bottom: 20px; right: 10px; width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 24px; box-shadow: 0 4px 10px rgba(15, 98, 254, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+            
+            <!-- VIEW PROFILE -->
+            <div id="m-view-profile" class="m-view">
+                <div class="section-title">Cá nhân</div>
+                
+                <!-- Check-in Button -->
+                <button class="m-btn m-btn-primary" id="btn-checkin" onclick="mApp.checkIn()" style="width: 100%; height: 50px; font-size: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; background: #e8f0fe; color: var(--primary);">
+                    <i class="fa-solid fa-location-dot"></i> <span>Check-in Chấm công</span>
+                </button>
+
+                <div class="m-card" style="text-align:center; padding:30px 15px; margin-bottom: 20px;">
+                    <div style="width:80px; height:80px; border-radius:50%; background:var(--primary); color:white; font-size:32px; display:flex; align-items:center; justify-content:center; margin: 0 auto 15px auto;">AD</div>
+                    <h3 style="margin-bottom:5px;">Nguyễn Admin</h3>
+                    <p style="color:var(--text-sec); font-size:14px;">Vai trò: Bán hàng / Thị trường</p>
+                </div>
+                
+                <div class="section-title" style="font-size: 13px; color: var(--text-sec); margin-bottom: 8px; margin-top: 20px; text-transform: uppercase;">Tài khoản</div>
+                <div class="m-list">
+                    <a href="#" class="m-list-item">
+                        <div><i class="fa-solid fa-user-pen icon-left"></i> Thông tin cá nhân</div>
+                        <i class="fa-solid fa-chevron-right icon-right"></i>
+                    </a>
+                    <a href="#" class="m-list-item">
+                        <div><i class="fa-solid fa-bell icon-left"></i> Cài đặt thông báo</div>
+                        <i class="fa-solid fa-chevron-right icon-right"></i>
+                    </a>
+                    <a href="#" class="m-list-item">
+                        <div><i class="fa-solid fa-lock icon-left"></i> Đổi mật khẩu</div>
+                        <i class="fa-solid fa-chevron-right icon-right"></i>
+                    </a>
+                </div>
+
+                <div class="section-title" style="font-size: 13px; color: var(--text-sec); margin-bottom: 8px; margin-top: 20px; text-transform: uppercase;">Khác</div>
+                <div class="m-list">
+                    <a href="#" class="m-list-item">
+                        <div><i class="fa-solid fa-headset icon-left"></i> Hỗ trợ & Trợ giúp</div>
+                        <i class="fa-solid fa-chevron-right icon-right"></i>
+                    </a>
+                    <a href="#" class="m-list-item">
+                        <div><i class="fa-solid fa-circle-info icon-left"></i> Về AudioApp</div>
+                        <i class="fa-solid fa-chevron-right icon-right"></i>
+                    </a>
+                    <a href="#" class="m-list-item text-danger" onclick="alert('Đăng xuất thành công!')">
+                        <div><i class="fa-solid fa-arrow-right-from-bracket icon-left"></i> Đăng xuất</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div class="m-footer">
+            <div class="m-tab active" data-target="m-view-tasks" onclick="mApp.navigate('tasks')">
+                <i class="fa-solid fa-clipboard-check"></i>
+                <span>Công việc</span>
+            </div>
+            <div class="m-tab" data-target="m-view-reports" onclick="mApp.navigate('reports')">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Báo cáo</span>
+            </div>
+            <div class="m-tab" data-target="m-view-orders" onclick="mApp.navigate('orders')">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Đơn hàng</span>
+            </div>
+            <div class="m-tab" data-target="m-view-profile" onclick="mApp.navigate('profile')">
+                <i class="fa-solid fa-user"></i>
+                <span>Cá nhân</span>
+            </div>
+        </div>
+        <!-- CREATE ORDER MODAL -->
+        <div id="m-modal-create-order" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface); z-index: 1000; padding-top: 50px;">
+            <div class="m-header" style="position: absolute; top: 0; width: 100%;">
+                <div class="m-header-title" style="flex: 1; text-align: center; font-size: 16px;">Tạo Đơn Hàng Mới</div>
+                <div style="position: absolute; left: 15px; top: 20px; color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer;" onclick="mApp.closeModal('m-modal-create-order')">Hủy</div>
+                <div style="position: absolute; right: 15px; top: 20px; color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer;" onclick="mApp.submitCreateOrder()">Lưu</div>
+            </div>
+            <div style="padding: 20px; overflow-y: auto; height: calc(100% - 60px);" class="no-scrollbar">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Tên khách hàng *</label>
+                    <input type="text" id="m-new-order-customer" placeholder="Nhập tên khách hàng" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Số điện thoại</label>
+                    <input type="tel" id="m-new-order-phone" placeholder="Nhập SĐT" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Sản phẩm / Dịch vụ *</label>
+                    <select id="m-new-order-service" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;">
+                        <!-- JS fill -->
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; color: var(--text-sec); display: block; margin-bottom: 5px;">Giá trị đơn hàng (VNĐ)</label>
+                    <input type="number" id="m-new-order-value" placeholder="Giá trị tự động hoặc nhập tay" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;">
+                </div>
+            </div>
+        </div>
+        
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="mobile.js"></script>
+</body>
+</html>
