@@ -193,14 +193,13 @@
     <div class="device-wrapper">
         <div class="device-frame">
         
-        <div class="m-header">
-            <div class="m-header-title"><i class="fa-solid fa-headphones"></i> AudioApp</div>
-            <div class="m-header-user">AD</div>
-        </div>
-
         <div class="m-content">
             <!-- VIEW TASKS -->
-            <div id="m-view-tasks" class="m-view active">
+            <div id="m-view-tasks" class="m-view active" style="padding-top: 0;">
+                <div class="m-header" style="padding: 20px 20px 15px 20px; display: flex; justify-content: space-between; align-items: center; margin: 0 -15px 15px -15px;">
+                    <div class="m-header-title"><i class="fa-solid fa-headphones"></i> AudioApp</div>
+                    <div class="m-header-user">AD</div>
+                </div>
                 <div class="section-title">Công việc của tôi</div>
                 <div id="m-tasks-list">
                     <!-- Rendered by JS -->
@@ -306,10 +305,10 @@
         </div>
         <!-- CREATE ORDER MODAL -->
         <div id="m-modal-create-order" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface); z-index: 1000; padding-top: 50px;">
-            <div class="m-header" style="position: absolute; top: 0; width: 100%;">
-                <div class="m-header-title" style="flex: 1; text-align: center; font-size: 16px;">Tạo Đơn Hàng Mới</div>
-                <div style="position: absolute; left: 15px; top: 20px; color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer;" onclick="mApp.closeModal('m-modal-create-order')">Hủy</div>
-                <div style="position: absolute; right: 15px; top: 20px; color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer;" onclick="mApp.submitCreateOrder()">Lưu</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); background: var(--surface);">
+                <div style="color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer; width: 50px;" onclick="mApp.closeModal('m-modal-create-order')">Hủy</div>
+                <div style="font-weight: 700; font-size: 16px; flex: 1; text-align: center; color: var(--primary);">Tạo Đơn Hàng</div>
+                <div style="color: var(--primary); font-weight: 600; font-size: 14px; cursor: pointer; width: 50px; text-align: right;" onclick="mApp.submitCreateOrder()">Lưu</div>
             </div>
             <div style="padding: 20px; overflow-y: auto; height: calc(100% - 60px);" class="no-scrollbar">
                 <div style="margin-bottom: 15px;">

@@ -30,8 +30,8 @@ const mApp = {
         if(!container) return;
 
         let html = '';
-        // Only show pending tasks for this user (Nguyễn Admin)
-        const userTasks = mockData.tasks.filter(t => t.assignee === 'Nguyễn Admin' && t.status !== 'Hoàn thành');
+        // Only show tasks for this user (Nguyễn Admin), don't filter out completed tasks so the UI looks fuller
+        const userTasks = mockData.tasks.filter(t => t.assignee === 'Nguyễn Admin');
         
         if (userTasks.length === 0) {
             html = '<div style="text-align:center; padding:20px; color:var(--text-sec);">Không có công việc nào</div>';
@@ -94,6 +94,44 @@ const mApp = {
             revEl.textContent = formatMoney(revenue);
             document.getElementById('m-kpi-orders').textContent = ordersCount;
             document.getElementById('m-kpi-tasks').textContent = taskRate + '%';
+            
+            // Add Recent Activities
+            let recentHtml = `
+            <div style="text-align: left; margin-top: 25px;">
+                <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-main); font-weight: 600;">Hoạt động gần đây</h3>
+                <div class="m-card" style="padding: 0; overflow: hidden; margin-bottom: 50px;">
+                    <div style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">Đơn hàng DH012</div>
+                            <div style="font-size: 12px; color: var(--text-sec); margin-top: 3px;">Đã thanh toán</div>
+                        </div>
+                        <div style="color: var(--primary); font-weight: 600; font-size: 14px;">+4.500.000 đ</div>
+                    </div>
+                    <div style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">Đơn hàng DH011</div>
+                            <div style="font-size: 12px; color: var(--text-sec); margin-top: 3px;">Đã thanh toán</div>
+                        </div>
+                        <div style="color: var(--primary); font-weight: 600; font-size: 14px;">+2.900.000 đ</div>
+                    </div>
+                    <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">Check-in chấm công</div>
+                            <div style="font-size: 12px; color: var(--text-sec); margin-top: 3px;">08:30 Sáng nay</div>
+                        </div>
+                        <div style="color: #16a34a; font-weight: 600; font-size: 14px;"><i class="fa-solid fa-check"></i></div>
+                    </div>
+                </div>
+            </div>`;
+            
+            let reportView = document.getElementById('m-view-reports');
+            let recentContainer = document.getElementById('m-recent-activities');
+            if(!recentContainer) {
+                let div = document.createElement('div');
+                div.id = 'm-recent-activities';
+                div.innerHTML = recentHtml;
+                reportView.appendChild(div);
+            }
         }
     },
     

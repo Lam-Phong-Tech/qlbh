@@ -39,7 +39,11 @@ const defaultMockData = {
         { id: 'DH007', customerId: 'KH007', service: 'Cặp Loa Bookshelf Edifier R1700BT', value: 2500000, saler: 'Trần Sale 1', status: 'Chờ xác nhận', paymentStatus: 'Chưa thanh toán', date: '2026-07-04' },
         { id: 'DH008', customerId: 'KH008', service: 'Dàn âm thanh Sony MHC-V43D', value: 7500000, saler: 'Lê Quản Lý', status: 'Trả hàng', paymentStatus: 'Đã thanh toán', date: '2026-07-05' },
         { id: 'DH009', customerId: 'KH001', service: 'Micro Không Dây JBL VM300', value: 7900000, saler: 'Trần Sale 1', status: 'Chờ xác nhận', paymentStatus: 'Chưa thanh toán', date: '2026-07-05' },
-        { id: 'DH010', customerId: 'KH003', service: 'Loa Vi Tính Logitech Z906', value: 6500000, saler: 'Lê Quản Lý', status: 'Chờ giao hàng', paymentStatus: 'Chưa thanh toán', date: '2026-07-05' }
+        { id: 'DH010', customerId: 'KH003', service: 'Loa Vi Tính Logitech Z906', value: 6500000, saler: 'Lê Quản Lý', status: 'Chờ giao hàng', paymentStatus: 'Chưa thanh toán', date: '2026-07-05' },
+        { id: 'DH011', customerId: 'KH002', service: 'Loa Bluetooth JBL Flip 6', value: 2900000, saler: 'Nguyễn Admin', status: 'Đã giao', paymentStatus: 'Đã thanh toán', date: '2026-07-01' },
+        { id: 'DH012', customerId: 'KH004', service: 'Loa Soundbar Sony HT-S400', value: 4500000, saler: 'Nguyễn Admin', status: 'Chờ giao hàng', paymentStatus: 'Chưa thanh toán', date: '2026-07-03' },
+        { id: 'DH013', customerId: 'KH005', service: 'Loa Karaoke JBL PartyBox 310', value: 14900000, saler: 'Nguyễn Admin', status: 'Chờ lấy hàng', paymentStatus: 'Đã thanh toán', date: '2026-07-04' },
+        { id: 'DH014', customerId: 'KH007', service: 'Dàn Âm thanh Sony MHC-V43D', value: 7500000, saler: 'Nguyễn Admin', status: 'Chờ xác nhận', paymentStatus: 'Chưa thanh toán', date: '2026-07-05' }
     ],
     tasks: [
         { id: 'CV001', title: 'Test âm thanh trước khi giao', orderId: 'DH001', assignee: 'Phạm Kỹ Thuật 1', priority: 'Cao', status: 'Hoàn thành', deadline: '2026-07-10', notes: 'Đã kiểm tra kỹ' },
@@ -60,7 +64,7 @@ const defaultMockData = {
     ]
 };
 
-// Reset mockData if needed to apply fixes
+// Force reload mock data to apply fixes
 localStorage.setItem('qlbh_data', JSON.stringify(defaultMockData));
 let mockData = JSON.parse(localStorage.getItem('qlbh_data'));
 
